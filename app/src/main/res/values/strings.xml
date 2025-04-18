@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyWishListApp</string>
+    <string name="update_wish">저장</string>
+    <string name="edit_wish">수정</string>
 </resources>
