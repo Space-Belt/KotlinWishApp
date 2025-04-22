@@ -9,14 +9,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Button
 
-import androidx.compose.material3.Scaffold
+
 
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +32,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.mywishlistapp.data.Wish
+import kotlinx.coroutines.launch
 
 @Composable
 fun AddEditDetailView(
@@ -34,7 +41,18 @@ fun AddEditDetailView(
     viewModel: WishViewModel,
     navController: NavController
 ) {
+
+    val snackMessage = remember{
+        mutableStateOf("")
+    }
+
+    val scope = rememberCoroutineScope()
+
+    val scaffoldState = rememberScaffoldState()
+
+
     Scaffold(
+        scaffoldState = scaffoldState,
         topBar = { AppBarView(title =
             if(id != 0L) stringResource(id = R.string.update_wish)
             else stringResource(id = R.string.edit_wish)
@@ -50,7 +68,7 @@ fun AddEditDetailView(
         ) {
             Spacer(modifier = Modifier.height(10.dp))
 
-            WishTextField(label = "Title",
+            WishTextField(label = "제목",
                 value = viewModel.wishTitleState,
                 onValueChanged = {
                     viewModel.onWishTitleChanged(it)
@@ -58,7 +76,7 @@ fun AddEditDetailView(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            WishTextField(label = "Title",
+            WishTextField(label = "설명",
                 value = viewModel.wishDecriptionState,
                 onValueChanged = {
                     viewModel.onWishDescriptionChanged(it)
@@ -68,15 +86,30 @@ fun AddEditDetailView(
                 onClick={
                     if(viewModel.wishTitleState.isNotEmpty() &&
                         viewModel.wishDecriptionState.isNotEmpty()) {
+                        if(id != 0L) {
 
+                        } else {
+                            viewModel.addWish(
+                                Wish(
+                                    title = viewModel.wishTitleState.trim(),
+                                    description = viewModel.wishDecriptionState.trim()
+                                )
+                            )
+                            snackMessage.value = "Wish 생성되었습니다."
+                        }
                     } else {
-
+                        snackMessage.value = "Wish 입력 해주세요"
                     }
+                    scope.launch {
+                        scaffoldState.snackbarHostState.showSnackbar(snackMessage.value)
+                        navController.navigateUp()
+                    }
+
                 }
             ) {
                 Text(
-                    text =  if(id != 0L) stringResource(id = R.string.update_wish)
-                    else stringResource(id = R.string.edit_wish),
+                    text =  if(id != 0L) stringResource(id = R.string .edit_wish)
+                    else stringResource(id = R.string.update_wish),
                     style = TextStyle(
                         fontSize = 18.sp
                     )
