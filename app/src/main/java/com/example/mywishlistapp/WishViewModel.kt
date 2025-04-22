@@ -51,7 +51,7 @@ class WishViewModel(
 
     fun deleteWish(wish:Wish) {
         viewModelScope.launch(Dispatchers.IO) {
-            wishRepository.updateAWish(wish= wish)
+            wishRepository.deleteAWish (wish= wish)
         }
     }
 
