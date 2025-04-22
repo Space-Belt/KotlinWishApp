@@ -43,7 +43,7 @@ fun HomeView(
                 backgroundColor = Color.Black,
                 onClick = {
                     Toast.makeText(context, "떠있는 버튼 클릭", Toast.LENGTH_LONG).show()
-                    navController.navigate(Screen.AddScreen.route)
+                    navController.navigate(Screen.AddScreen.route + "/0L")
                 }
             ) {
                 Icon(
@@ -58,8 +58,9 @@ fun HomeView(
         ){
             items(wishlist.value) {
                 wish -> WishItem(wish = wish) {
-
-            }
+                    val id = wish.id
+                    navController.navigate(Screen.AddScreen.route + "/$id")
+                }
             }
         }
     }
